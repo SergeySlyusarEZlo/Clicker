@@ -116,6 +116,20 @@ try:
             pyautogui.press('enter')
             time.sleep(0.2)
 
+            # Clear screen and redraw header after click
+            os.system('clear')
+            print("\n" + "=" * 60)
+            print("    ╔═══════════════════════════════╗")
+            print("               Auto-Clicker          ")
+            print("    ╚═══════════════════════════════╝")
+            print(f"  © 2026 Sergii Sliusar <powerjet777@gmail.com>")
+            print(f"  Auto-clicker for Claude")
+            print(f"  Idle timeout: {idle_timeout} seconds")
+            print(f"  Screen size: {screen_width}x{screen_height}")
+            print(f"  Target: ({target_x}, {target_y}) | Log: clicker.log")
+            print(f"  Press Ctrl+C to stop")
+            print("=" * 60 + "\n")
+
             progress_bar = "█" * 20
             status_msg = f"✓ CLICKED! Idle: {idle_time:.1f}s | Claude: running [{progress_bar}]"
             print(f"\r{status_msg:<80}", end='', flush=True)
