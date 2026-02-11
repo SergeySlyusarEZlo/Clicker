@@ -2,13 +2,26 @@
 import pyautogui
 import time
 import logging
+from logging.handlers import RotatingFileHandler
 import subprocess
 import argparse
 import os
 from pynput import mouse, keyboard
 
-logging.basicConfig(filename='clicker.log', level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s: %(message)s')
+# Configure rotating log handler (max ~10000 lines, ~1MB per file)
+log_handler = RotatingFileHandler(
+    'clicker.log',
+    maxBytes=1024 * 1024,  # 1 MB (~10000 lines)
+    backupCount=2,          # Keep 2 backup files
+    encoding='utf-8'
+)
+log_handler.setLevel(logging.DEBUG)
+log_formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
+log_handler.setFormatter(log_formatter)
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+logger.addHandler(log_handler)
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -81,9 +94,9 @@ try:
     print(f"  Press Ctrl+C to stop")
     print("=" * 60 + "\n")
 
-    logging.info(f"Screen size: {screen_width}x{screen_height}")
-    logging.info(f"Target position: {target_x}, {target_y}")
-    logging.info(f"Idle timeout: {idle_timeout} seconds")
+    logger.info(f"Screen size: {screen_width}x{screen_height}")
+    logger.info(f"Target position: {target_x}, {target_y}")
+    logger.info(f"Idle timeout: {idle_timeout} seconds")
 
     # Start visual indicator in background
     indicator_process = None
@@ -95,9 +108,9 @@ try:
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
-            logging.info("Visual indicator started")
+            logger.info("Visual indicator started")
         except Exception as e:
-            logging.warning(f"Could not start visual indicator: {e}")
+            logger.warning(f"Could not start visual indicator: {e}")
 
     mouse_listener = mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll)
     keyboard_listener = keyboard.Listener(on_press=on_press)
@@ -133,7 +146,7 @@ try:
             progress_bar = "█" * 20
             status_msg = f"✓ CLICKED! Idle: {idle_time:.1f}s | Claude: running [{progress_bar}]"
             print(f"\r{status_msg:<80}", end='', flush=True)
-            logging.debug(f"Clicked! Idle: {idle_time:.0f}s, Claude: running")
+            logger.debug(f"Clicked! Idle: {idle_time:.0f}s, Claude: running")
 
             reset_activity()
         else:
@@ -149,16 +162,16 @@ try:
             claude_status = "running" if claude_running else "not found"
             status_msg = f"{spinner} Waiting... Idle: {idle_time:.1f}/{idle_timeout}s | Claude: {claude_status} [{progress_bar}]"
             print(f"\r{status_msg:<80}", end='', flush=True)
-            logging.debug(f"Waiting. Idle: {idle_time:.0f}s, Claude: {claude_running}")
+            logger.debug(f"Waiting. Idle: {idle_time:.0f}s, Claude: {claude_running}")
 
         time.sleep(1)
 
 except KeyboardInterrupt:
     print("\nStopped by user (Ctrl+C)")
-    logging.info("Stopped by user (Ctrl+C)")
+    logger.info("Stopped by user (Ctrl+C)")
 except Exception as e:
     print(f"\nError: {e}")
-    logging.error("Exception: %s", e, exc_info=True)
+    logger.error("Exception: %s", e, exc_info=True)
 finally:
     # Stop visual indicator
     if 'indicator_process' in locals() and indicator_process:

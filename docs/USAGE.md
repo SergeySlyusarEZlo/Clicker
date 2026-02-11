@@ -252,10 +252,13 @@ Regularly check logs for issues:
 tail -f clicker.log
 ```
 
-Clear old logs:
+View rotated logs:
 ```bash
-> clicker.log
+cat clicker.log.1  # Previous log
+cat clicker.log.2  # Oldest backup
 ```
+
+Note: Logs are automatically rotated when they reach ~1 MB (~10,000 lines).
 
 ### 4. Process Detection
 
@@ -284,6 +287,18 @@ For lower CPU usage:
 ### Log File Location
 
 Logs are written to `clicker.log` in the application directory.
+
+### Log Rotation
+
+The application uses automatic log rotation to prevent unlimited log growth:
+- Maximum file size: ~1 MB (~10,000 lines)
+- Backup files: 2 rotated copies kept (clicker.log.1, clicker.log.2)
+- When clicker.log reaches 1 MB:
+  - clicker.log.1 → clicker.log.2
+  - clicker.log → clicker.log.1
+  - New clicker.log is created
+
+This ensures logs don't consume excessive disk space while maintaining recent history.
 
 ### Log Levels
 

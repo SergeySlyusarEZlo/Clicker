@@ -4,6 +4,18 @@ All notable changes to POWERJET Auto-Clicker will be documented in this file.
 
 © 2026 Sergii Sliusar <powerjet777@gmail.com>
 
+## [1.1.1] - 2026-02-11
+
+### Added
+- Log rotation with automatic file size management
+  - Maximum ~10,000 lines per log file (~1 MB)
+  - Keeps 2 backup files (clicker.log.1, clicker.log.2)
+  - Prevents unlimited log growth
+
+### Changed
+- Replaced basic logging with RotatingFileHandler
+- Logger now properly manages log file size
+
 ## [1.1.0] - 2026-02-11
 
 ### Added
