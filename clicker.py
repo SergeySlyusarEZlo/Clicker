@@ -73,6 +73,32 @@ def is_claude_running():
     except Exception:
         return False
 
+def stop_indicator(indicator_process):
+    """Stop visual indicator process"""
+    if indicator_process and indicator_process.poll() is None:
+        try:
+            indicator_process.terminate()
+            indicator_process.wait(timeout=1)
+            logger.debug("Visual indicator stopped")
+        except Exception as e:
+            logger.warning(f"Could not stop indicator: {e}")
+
+def start_indicator(target_x, target_y, indicator_script):
+    """Start visual indicator process"""
+    if os.path.exists(indicator_script):
+        try:
+            process = subprocess.Popen(
+                ['python3', indicator_script, str(target_x), str(target_y)],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            logger.debug("Visual indicator started")
+            return process
+        except Exception as e:
+            logger.warning(f"Could not start indicator: {e}")
+            return None
+    return None
+
 try:
     # Clear screen before starting
     os.system('clear')
@@ -99,18 +125,10 @@ try:
     logger.info(f"Idle timeout: {idle_timeout} seconds")
 
     # Start visual indicator in background
-    indicator_process = None
     indicator_script = os.path.join(os.path.dirname(__file__), 'indicator.py')
-    if os.path.exists(indicator_script):
-        try:
-            indicator_process = subprocess.Popen(
-                ['python3', indicator_script, str(target_x), str(target_y)],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
-            )
-            logger.info("Visual indicator started")
-        except Exception as e:
-            logger.warning(f"Could not start visual indicator: {e}")
+    indicator_process = start_indicator(target_x, target_y, indicator_script)
+    if indicator_process:
+        logger.info("Visual indicator started")
 
     mouse_listener = mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll)
     keyboard_listener = keyboard.Listener(on_press=on_press)
@@ -122,12 +140,18 @@ try:
         claude_running = is_claude_running()
 
         if idle_time >= idle_timeout and claude_running:
+            # Stop visual indicator before clicking
+            stop_indicator(indicator_process)
+
             pyautogui.moveTo(target_x, target_y)
             time.sleep(0.3)
             pyautogui.click()
             time.sleep(0.5)
             pyautogui.press('enter')
             time.sleep(0.2)
+
+            # Restart visual indicator after clicking
+            indicator_process = start_indicator(target_x, target_y, indicator_script)
 
             # Clear screen and redraw header after click
             os.system('clear')
@@ -174,9 +198,5 @@ except Exception as e:
     logger.error("Exception: %s", e, exc_info=True)
 finally:
     # Stop visual indicator
-    if 'indicator_process' in locals() and indicator_process:
-        try:
-            indicator_process.terminate()
-            indicator_process.wait(timeout=2)
-        except:
-            pass
+    if 'indicator_process' in locals():
+        stop_indicator(indicator_process)

@@ -4,6 +4,21 @@ All notable changes to POWERJET Auto-Clicker will be documented in this file.
 
 © 2026 Sergii Sliusar <powerjet777@gmail.com>
 
+## [1.2.1] - 2026-02-11
+
+### Added
+- Indicator hide/show functionality during click
+  - Visual indicator now hides before click/enter
+  - Automatically reappears after click sequence
+  - Prevents indicator from interfering with clicks
+
+### Changed
+- Refactored indicator management into dedicated functions
+  - start_indicator() for launching indicator process
+  - stop_indicator() for graceful termination
+- Improved indicator lifecycle management
+- Cleaner finally block using stop_indicator()
+
 ## [1.2.0] - 2026-02-11
 
 ### Added
