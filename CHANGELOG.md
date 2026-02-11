@@ -4,6 +4,36 @@ All notable changes to POWERJET Auto-Clicker will be documented in this file.
 
 © 2026 Sergii Sliusar <powerjet777@gmail.com>
 
+## [1.2.0] - 2026-02-11
+
+### Added
+- Comprehensive test suite with pytest
+  - Unit tests for all major components
+  - Test coverage for argument parsing
+  - Process detection tests with mocking
+  - Activity tracking and idle detection tests
+  - Progress bar and spinner tests
+  - Logging configuration tests
+  - Screen coordinate calculation tests
+  - Click sequence execution tests
+- Test infrastructure
+  - pytest configuration (pytest.ini)
+  - Test fixtures (conftest.py)
+  - Automated test runner script (run_tests.sh)
+- Testing documentation (docs/TESTING.md)
+  - Complete testing guide
+  - Coverage instructions
+  - Best practices for writing tests
+- Test dependencies in requirements.txt
+  - pytest >= 7.4.0
+  - pytest-cov >= 4.1.0
+  - pytest-mock >= 3.11.1
+
+### Changed
+- Updated .gitignore to exclude test artifacts
+- Updated README with Testing section
+- Updated project structure documentation
+
 ## [1.1.1] - 2026-02-11
 
 ### Added

@@ -1,6 +1,14 @@
 # Logs
 *.log
 
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+coverage.xml
+*.cover
+
 # IDE
 .idea/
 .vscode/

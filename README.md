@@ -8,6 +8,7 @@ Auto-clicker for Claude that automatically clicks on a specified screen area whe
 
 - [Installation Guide](docs/INSTALL.md) - Detailed installation instructions
 - [Usage Guide](docs/USAGE.md) - Complete usage documentation
+- [Testing Guide](docs/TESTING.md) - Running and writing tests
 - [Changelog](CHANGELOG.md) - Version history and changes
 
 ## Description
@@ -129,13 +130,20 @@ Clicker/
 ├── clicker.py         # Main auto-clicker script
 ├── indicator.py       # Visual indicator (optional)
 ├── install.sh         # Installation script
+├── run_tests.sh       # Test runner script
 ├── requirements.txt   # Python dependencies
+├── pytest.ini         # Pytest configuration
 ├── README.md          # Main documentation
 ├── CHANGELOG.md       # Version history
 ├── .gitignore         # Git ignore rules
 ├── docs/              # Documentation folder
 │   ├── INSTALL.md     # Installation guide
-│   └── USAGE.md       # Usage guide
+│   ├── USAGE.md       # Usage guide
+│   └── TESTING.md     # Testing guide
+├── tests/             # Test suite
+│   ├── __init__.py    # Test package
+│   ├── conftest.py    # Pytest fixtures
+│   └── test_clicker.py # Unit tests
 └── clicker.log        # Log file (created automatically)
 ```
 
@@ -158,6 +166,31 @@ Clicker/
 ⠋ Waiting... Idle: 5.2/20s | Claude: running [█████░░░░░░░░░░░░░░░]
 ✓ CLICKED! Idle: 20.1s | Claude: running [████████████████████]
 ```
+
+## Testing
+
+The project includes comprehensive test coverage:
+
+```bash
+# Run all tests
+./run_tests.sh
+
+# Or use pytest directly
+pytest -v
+
+# Run with coverage
+pytest --cov=. --cov-report=html
+```
+
+Test coverage includes:
+- Command-line argument parsing
+- Process detection
+- Activity tracking
+- Progress bar and spinner
+- Logging and file operations
+- Screen coordinates and click sequence
+
+See [Testing Guide](docs/TESTING.md) for detailed information.
 
 ## Security
 
