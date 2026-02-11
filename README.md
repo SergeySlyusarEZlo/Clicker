@@ -4,6 +4,12 @@ Auto-clicker for Claude that automatically clicks on a specified screen area whe
 
 © 2026 Sergii Sliusar <powerjet777@gmail.com>
 
+## Documentation
+
+- [Installation Guide](docs/INSTALL.md) - Detailed installation instructions
+- [Usage Guide](docs/USAGE.md) - Complete usage documentation
+- [Changelog](CHANGELOG.md) - Version history and changes
+
 ## Description
 
 The program monitors mouse and keyboard activity. When the system is idle for a specified time and the Claude process is running, the program automatically clicks on a designated screen area and presses Enter.
@@ -124,8 +130,12 @@ Clicker/
 ├── indicator.py       # Visual indicator (optional)
 ├── install.sh         # Installation script
 ├── requirements.txt   # Python dependencies
-├── README.md          # Documentation
+├── README.md          # Main documentation
+├── CHANGELOG.md       # Version history
 ├── .gitignore         # Git ignore rules
+├── docs/              # Documentation folder
+│   ├── INSTALL.md     # Installation guide
+│   └── USAGE.md       # Usage guide
 └── clicker.log        # Log file (created automatically)
 ```
 
