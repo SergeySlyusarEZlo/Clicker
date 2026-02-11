@@ -25,12 +25,32 @@ The program monitors mouse and keyboard activity. When the system is idle for a 
 
 ## Installation
 
+### Quick Install (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/SergeySlyusarEZlo/Clicker.git
+cd Clicker
+
+# Run the installation script
+chmod +x install.sh
+./install.sh
+```
+
+The installation script will:
+- Check Python 3 and pip3 installation
+- Install required dependencies (pyautogui, pynput)
+- Make scripts executable
+- Display usage instructions
+
+### Manual Installation
+
 ```bash
 # Install dependencies
-pip install pyautogui pynput
+pip3 install -r requirements.txt
 
-# Or via requirements.txt (if available)
-pip install -r requirements.txt
+# Make scripts executable
+chmod +x clicker.py indicator.py
 ```
 
 ## Usage
@@ -99,11 +119,14 @@ If `indicator.py` is present in the same directory, the program will automatical
 ## Project Structure
 
 ```
-clicker/
-├── clicker.py      # Main script
-├── indicator.py    # Visual indicator (optional)
-├── clicker.log     # Log file (created automatically)
-└── README.md       # This file
+Clicker/
+├── clicker.py         # Main auto-clicker script
+├── indicator.py       # Visual indicator (optional)
+├── install.sh         # Installation script
+├── requirements.txt   # Python dependencies
+├── README.md          # Documentation
+├── .gitignore         # Git ignore rules
+└── clicker.log        # Log file (created automatically)
 ```
 
 ## Output Example
