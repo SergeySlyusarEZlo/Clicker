@@ -48,10 +48,12 @@ else:
 last_activity_time = time.time()
 spinner_chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
 spinner_index = 0
+suppress_activity = False
 
 def reset_activity():
     global last_activity_time
-    last_activity_time = time.time()
+    if not suppress_activity:
+        last_activity_time = time.time()
 
 def on_move(x, y):
     reset_activity()
@@ -151,7 +153,9 @@ try:
                 time.sleep(0.5)
                 pyautogui.press('enter')
                 time.sleep(0.2)
+                suppress_activity = True
                 pyautogui.moveTo(prev_x, prev_y)
+                suppress_activity = False
             except pyautogui.FailSafeException:
                 logger.warning("Fail-safe triggered: mouse was at a screen corner. Skipping click.")
                 print(f"\r{'⚠ Fail-safe: move mouse away from corner and wait...':<80}", end='', flush=True)
@@ -178,7 +182,7 @@ try:
 
             progress_bar = "█" * 20
             status_msg = f"✓ CLICKED! Idle: {idle_time:.1f}s | Claude: running [{progress_bar}]"
-            print(f"\r{status_msg:<80}", end='', flush=True)
+            print(f"\r\033[2K{status_msg}", end='', flush=True)
             logger.debug(f"Clicked! Idle: {idle_time:.0f}s, Claude: running")
 
             reset_activity()
@@ -194,7 +198,7 @@ try:
 
             claude_status = "running" if claude_running else "not found"
             status_msg = f"{spinner} Waiting... Idle: {idle_time:.1f}/{idle_timeout}s | Claude: {claude_status} [{progress_bar}]"
-            print(f"\r{status_msg:<80}", end='', flush=True)
+            print(f"\r\033[2K{status_msg}", end='', flush=True)
             logger.debug(f"Waiting. Idle: {idle_time:.0f}s, Claude: {claude_running}")
 
         time.sleep(1)
