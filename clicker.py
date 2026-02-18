@@ -143,12 +143,21 @@ try:
             # Stop visual indicator before clicking
             stop_indicator(indicator_process)
 
-            pyautogui.moveTo(target_x, target_y)
-            time.sleep(0.3)
-            pyautogui.click()
-            time.sleep(0.5)
-            pyautogui.press('enter')
-            time.sleep(0.2)
+            try:
+                prev_x, prev_y = pyautogui.position()
+                pyautogui.moveTo(target_x, target_y)
+                time.sleep(0.3)
+                pyautogui.click()
+                time.sleep(0.5)
+                pyautogui.press('enter')
+                time.sleep(0.2)
+                pyautogui.moveTo(prev_x, prev_y)
+            except pyautogui.FailSafeException:
+                logger.warning("Fail-safe triggered: mouse was at a screen corner. Skipping click.")
+                print(f"\r{'⚠ Fail-safe: move mouse away from corner and wait...':<80}", end='', flush=True)
+                indicator_process = start_indicator(target_x, target_y, indicator_script)
+                reset_activity()
+                continue
 
             # Restart visual indicator after clicking
             indicator_process = start_indicator(target_x, target_y, indicator_script)
