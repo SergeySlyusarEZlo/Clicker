@@ -22,10 +22,12 @@ Complete installation guide for POWERJET Auto-Clicker.
 - pip3
 - pyautogui >= 0.9.54
 - pynput >= 1.7.6
+- evdev >= 1.6.0 (for Wayland support)
 
 ### System Permissions
-- X11 display server (for GUI automation)
+- X11 or Wayland display server
 - Permission to simulate mouse and keyboard events
+- On Wayland (Ubuntu 22.04+): access to `/dev/uinput` via `input` group
 
 ## Quick Installation
 
@@ -43,9 +45,13 @@ chmod +x install.sh
 
 The script will:
 1. Check for Python 3 and pip3
-2. Install required Python packages
-3. Make scripts executable
-4. Display usage instructions
+2. Detect Ubuntu version and display server (X11/Wayland)
+3. Install required system packages (xdotool, ydotool on Wayland)
+4. Install required Python packages
+5. Set up `/dev/uinput` permissions for Wayland support (Ubuntu 22.04+)
+6. Add user to `input` group
+7. Make scripts executable
+8. Display usage instructions
 
 ## Manual Installation
 
@@ -69,6 +75,7 @@ Or install packages individually:
 ```bash
 pip3 install pyautogui>=0.9.54
 pip3 install pynput>=1.7.6
+pip3 install evdev>=1.6.0
 ```
 
 ### Step 3: Make Scripts Executable
@@ -88,7 +95,37 @@ You should see the help message with available options.
 
 ## Platform-Specific Notes
 
-### Ubuntu/Debian
+### Ubuntu 22.04+ (Wayland)
+
+Ubuntu 22.04 and later use Wayland by default. The auto-clicker uses `evdev/uinput` for input simulation on Wayland. The install script handles this automatically, but if you need to set it up manually:
+
+```bash
+# Load uinput kernel module
+sudo modprobe uinput
+echo 'uinput' | sudo tee /etc/modules-load.d/uinput.conf
+
+# Create udev rule for /dev/uinput
+echo 'KERNEL=="uinput", GROUP="input", MODE="0660"' | sudo tee /etc/udev/rules.d/99-uinput.rules
+sudo udevadm control --reload-rules && sudo udevadm trigger
+
+# Add user to input group (requires re-login)
+sudo usermod -aG input $USER
+
+# Set permissions for current session (before re-login)
+sudo chmod 0666 /dev/uinput
+```
+
+**Input backend priority on Wayland:** evdev/uinput > ydotool > xdotool > pyautogui (fallback)
+
+### Ubuntu 20.04 and earlier (X11)
+
+Works out of the box with xdotool:
+
+```bash
+sudo apt-get install xdotool
+```
+
+### Ubuntu/Debian (general)
 
 You may need to install additional system packages:
 
@@ -144,6 +181,35 @@ If Python can't find required modules:
 ```bash
 pip3 install --user -r requirements.txt
 ```
+
+### Wayland: Clicks Not Working (Ubuntu 22.04+)
+
+If the script runs but clicks don't register on Wayland:
+
+1. Check your display server:
+```bash
+echo $XDG_SESSION_TYPE
+# Should output "wayland" or "x11"
+```
+
+2. Verify `/dev/uinput` is accessible:
+```bash
+ls -la /dev/uinput
+# Should show: crw-rw---- 1 root input ...
+```
+
+3. Check if you're in the `input` group (active in current session):
+```bash
+id | grep input
+# Should show (input) in the output
+```
+
+4. If the group is not active, either re-login or set temporary permissions:
+```bash
+sudo chmod 0666 /dev/uinput
+```
+
+5. Check which backend the script selects — it prints it on startup (look for "Backend:" line).
 
 ### X11 Display Error
 
